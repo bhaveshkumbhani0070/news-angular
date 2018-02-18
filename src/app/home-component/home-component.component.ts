@@ -1,16 +1,49 @@
-import { Component,ViewChild } from '@angular/core';
+import { Component, OnInit ,ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-home-component',
+  templateUrl: './home-component.component.html',
+  styleUrls: ['./home-component.component.css']
 })
-export class AppComponent {
+export class HomeComponentComponent implements OnInit {
+
+  newsData:any;
+
+  constructor(
+    private dataService:DataService
+  ) { }
+
+  ngOnInit() {
+
+    this.loadDefaultData();
+
+  }
+
+  loadDefaultData(){
+    // this.analyticsService.getMostReturnedUser().subscribe( res => {
+    //   if ( res.status === 200) {
+    //      const data = res.body;
+    //      if ( !data.error ) {
+    //       // this.newsData=
+    //     }
+    //    }
+    //  }, error => {
+ 
+    //  });
+
+      this.dataService.getNews()
+          .subscribe(res => {
+            console.log('res',res);
+            this.newsData = res;
+          });
+  }
+
   displayedColumns = ['position', 'name', 'weight', 'symbol'];
 
 
-  dataSource = new MatTableDataSource<Element>(ELEMENT_DATA);
+  dataSource = new MatTableDataSource<Element>(this.newsData);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -22,6 +55,7 @@ export class AppComponent {
     this.dataSource.paginator = this.paginator;
   }
 }
+
 
 export interface Element {
   name: string;
@@ -52,3 +86,4 @@ const ELEMENT_DATA: Element[] = [
   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
 ];
+
